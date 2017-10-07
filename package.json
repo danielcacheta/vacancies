@@ -1,0 +1,19 @@
+{
+  "name": "vacancies",
+  "version": "1.0.0",
+  "description": "This project lets users create and maintain Vacancies",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielcacheta/vacancies.git"
+  },
+  "author": "Daniel Cacheta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielcacheta/vacancies/issues"
+  },
+  "homepage": "https://github.com/danielcacheta/vacancies#readme"
+}
