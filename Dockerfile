@@ -1,45 +1,62 @@
-# Usage (given build times depend on machine):
+# Build:
+# docker build -t meanjs/mean .
 #
-#    Build SMALL image (no cache; ~20MB, time for build=rebuild = ~360s):
-#    docker build --squash="true" -t angular-starter .
+# Run:
+# docker run -it meanjs/mean
 #
-#    Build FAST (rebuild) image (cache; >280MB, build time ~360s, rebuild time ~80s):
-#    docker build -t angular-starter .
-#
-#    Clean (remove intermidiet images):
-#    docker rmi -f $(docker images -f "dangling=true" -q)
-#
-#    Run image (on localhost:8080):
-#    docker run --name angular-starter -p 8080:80 angular-starter &
-#
-#    Run image as virtual host (read more: https://github.com/jwilder/nginx-proxy):
-#    docker run -e VIRTUAL_HOST=angular-starter.your-domain.com --name angular-starter angular-starter &
+# Compose:
+# docker-compose up -d
 
-FROM nginx:1.13.0-alpine
+FROM ubuntu:latest
+MAINTAINER MEAN.JS
 
-# install console and node
-RUN apk add --no-cache bash=4.3.46-r5 &&\
-    apk add --no-cache openssl=1.0.2k-r0 &&\
-    apk add --no-cache nodejs
+# 80 = HTTP, 443 = HTTPS, 3000 = MEAN.JS server, 35729 = livereload, 8080 = node-inspector
+EXPOSE 80 443 3000 35729 8080
 
-# install npm ( in separate dir due to docker cache)
-ADD package.json /tmp/npm_inst/package.json
-RUN cd /tmp/npm_inst &&\
-    npm install &&\
-    mkdir -p /tmp/app &&\
-    mv /tmp/npm_inst/node_modules /tmp/app/
+# Set development environment as default
+ENV NODE_ENV development
 
-# build and publish application
-ADD . /tmp/app
-RUN cd /tmp/app &&\
-    npm run build:aot &&\
-    mv ./dist/* /usr/share/nginx/html/
+# Install Utilities
+RUN apt-get update -q  \
+ && apt-get install -yqq \
+ curl \
+ git \
+ ssh \
+ gcc \
+ make \
+ build-essential \
+ libkrb5-dev \
+ sudo \
+ apt-utils \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# clean
-RUN rm -Rf /tmp/npm_inst  &&\
-    rm -Rf /tmp/app &&\
-    rm -Rf /root/.npm &&\
-    apk del nodejs
+# Install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+RUN sudo apt-get install -yq nodejs \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# this is for virtual host purposes
-EXPOSE 80
+# Install MEAN.JS Prerequisites
+RUN npm install --quiet -g gulp bower yo mocha karma-cli pm2 && npm cache clean
+
+RUN mkdir -p /opt/mean.js/public/lib
+WORKDIR /opt/mean.js
+
+# Copies the local package.json file to the container
+# and utilities docker container cache to not needing to rebuild
+# and install node_modules/ everytime we build the docker, but only
+# when the local package.json file changes.
+# Install npm packages
+COPY package.json /opt/mean.js/package.json
+RUN npm install --quiet && npm cache clean
+
+# Install bower packages
+COPY bower.json /opt/mean.js/bower.json
+COPY .bowerrc /opt/mean.js/.bowerrc
+RUN bower install --quiet --allow-root --config.interactive=false
+
+COPY . /opt/mean.js
+
+# Run MEAN.JS server
+CMD npm install && npm start

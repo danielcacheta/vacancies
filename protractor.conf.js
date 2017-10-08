@@ -1,8 +1,8 @@
-/**
- * @author: @AngularClass
- */
+'use strict';
 
-/**
- * look in ./config for protractor.conf.js
- */
-exports.config = require('./config/protractor.conf.js').config;
+// Protractor configuration
+var config = {
+  specs: ['modules/*/tests/e2e/*.js']
+};
+
+exports.config = config;
