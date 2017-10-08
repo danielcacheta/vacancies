@@ -3,11 +3,10 @@ services:
   web:
     restart: always
     build: .
-    container_name: meanjs
+    container_name: webapp
     ports:
      - "3000:3000"
      - "5858:5858"
-     - "8080:8080"
      - "35729:35729"
     environment:
      - NODE_ENV=development

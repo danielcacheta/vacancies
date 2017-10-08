@@ -17,8 +17,15 @@ git clone https://github.com/danielcacheta/vacancies.git
 cd vacancies
 docker container run --rm -it -v $PWD:/usr/src/app -w /usr/src/app node npm install
 npm install -g bower
+```
+Project running options:
+```
 npm start
 ```
+```
+docker-compose up
+```
+
 If all the packages and modules installed successfully, your default web browser will open and you can see the default Vacancies application at `http://localhost:3000`.
 
 ## Testing The Application
