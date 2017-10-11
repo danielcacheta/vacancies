@@ -21,5 +21,11 @@
       state: 'vacancies.list',
       roles: ['*']
     });
+    
+    menuService.addSubMenuItem('topbar', 'vacancies', {
+      title: 'Create Vacancy',
+      state: 'admin.vacancies.create',
+      roles: ['user', 'admin']
+    });
   }
 }());

@@ -20,6 +20,31 @@
         controller: 'VacanciesListController',
         controllerAs: 'vm'
       })
+      .state('vacancies.create', {
+        url: '/create',
+        templateUrl: '/modules/vacancies/client/views/admin/form-vacancy.client.view.html',
+        controller: 'VacanciesController',
+        controllerAs: 'vm',
+        data: {
+          roles: ['user']
+        },
+        resolve: {
+          vacancyResolve: newVacancy
+        }
+      })
+      .state('vacancies.edit', {
+        url: '/:vacancyId/edit',
+        templateUrl: '/modules/vacancies/client/views/admin/form-vacancy.client.view.html',
+        controller: 'VacanciesController',
+        controllerAs: 'vm',
+        data: {
+          roles: ['user'],
+          pageTitle: '{{ vacancyResolve.title }}'
+        },
+        resolve: {
+          vacancyResolve: getVacancy
+        }
+      })
       .state('vacancies.view', {
         url: '/:vacancyId',
         templateUrl: '/modules/vacancies/client/views/view-vacancy.client.view.html',
@@ -40,5 +65,11 @@
     return VacanciesService.get({
       vacancyId: $stateParams.vacancyId
     }).$promise;
+  }
+
+  newVacancy.$inject = ['VacanciesService'];
+
+  function newVacancy(VacanciesService) {
+    return new VacanciesService();
   }
 }());

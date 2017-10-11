@@ -142,6 +142,36 @@ describe('Vacancy CRUD tests', function () {
       });
   });
 
+  it('should not be able to save a vacancy if no title is provided', function (done) {
+    // Invalidate title field
+    vacancy.title = '';
+
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new vacancy
+        agent.post('/api/vacancies')
+          .send(vacancy)
+          .expect(422)
+          .end(function (vacancySaveErr, vacancySaveRes) {
+            // Set message assertion
+            (vacancySaveRes.body.message).should.match('Title cannot be blank');
+
+            // Handle vacancy save error
+            done(vacancySaveErr);
+          });
+      });
+  });
+
   it('should be able to update a vacancy if signed in with the "admin" role', function (done) {
     agent.post('/api/auth/signin')
       .send(adminCredentials)

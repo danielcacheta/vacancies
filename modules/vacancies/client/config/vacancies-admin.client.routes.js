@@ -20,7 +20,7 @@
         controller: 'VacanciesAdminListController',
         controllerAs: 'vm',
         data: {
-          roles: ['admin']
+          roles: ['admin', 'user']
         }
       })
       .state('admin.vacancies.create', {
@@ -29,7 +29,7 @@
         controller: 'VacanciesAdminController',
         controllerAs: 'vm',
         data: {
-          roles: ['admin']
+          roles: ['admin', 'user']
         },
         resolve: {
           vacancyResolve: newVacancy
@@ -41,7 +41,7 @@
         controller: 'VacanciesAdminController',
         controllerAs: 'vm',
         data: {
-          roles: ['admin'],
+          roles: ['admin', 'user'],
           pageTitle: '{{ vacancyResolve.title }}'
         },
         resolve: {
