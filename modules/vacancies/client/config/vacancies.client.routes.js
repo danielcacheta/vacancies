@@ -22,7 +22,7 @@
       })
       .state('vacancies.create', {
         url: '/create',
-        templateUrl: '/modules/vacancies/client/views/admin/form-vacancy.client.view.html',
+        templateUrl: '/modules/vacancies/client/views/form-vacancy.client.view.html',
         controller: 'VacanciesController',
         controllerAs: 'vm',
         data: {
@@ -34,7 +34,7 @@
       })
       .state('vacancies.edit', {
         url: '/:vacancyId/edit',
-        templateUrl: '/modules/vacancies/client/views/admin/form-vacancy.client.view.html',
+        templateUrl: '/modules/vacancies/client/views/form-vacancy.client.view.html',
         controller: 'VacanciesController',
         controllerAs: 'vm',
         data: {

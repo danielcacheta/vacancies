@@ -173,49 +173,128 @@ describe('Vacancy CRUD tests', function () {
   });
 
   it('should be able to update a vacancy if signed in with the "admin" role', function (done) {
-    agent.post('/api/auth/signin')
-      .send(adminCredentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+    // Set vacancy user
+    vacancy.user = adminUser;
 
-        agent.post('/api/vacancies')
-          .send(vacancy)
-          .expect(200)
-          .end(function (vacancySaveErr, vacancySaveRes) {
-            // Handle vacancy save error
-            if (vacancySaveErr) {
-              return done(vacancySaveErr);
-            }
-            done();
-          });
-      });
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    // Save the vacancy
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(adminCredentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Updating vacancy
+          agent.put('/api/vacancies/' + vacancyObj._id)
+            .send(vacancy)
+            .expect(200)
+            .end(function (vacancySaveErr, vacancySaveRes) {
+              if (vacancySaveErr) {
+                return done(vacancySaveErr);
+              }
+              done();
+            });
+        });
+    });
   });
 
   it('should be able to update a vacancy if signed in with the "user" role', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+    // Set vacancy user
+    vacancy.user = user;
 
-        agent.post('/api/vacancies')
-          .send(vacancy)
-          .expect(200)
-          .end(function (vacancySaveErr, vacancySaveRes) {
-            // Handle vacancy save error
-            if (vacancySaveErr) {
-              return done(vacancySaveErr);
-            }
-            done();
-          });
-      });
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    // Save the vacancy
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Updating vacancy
+          agent.put('/api/vacancies/' + vacancyObj._id)
+            .send(vacancy)
+            .expect(200)
+            .end(function (vacancySaveErr, vacancySaveRes) {
+              if (vacancySaveErr) {
+                return done(vacancySaveErr);
+              }
+              done();
+            });
+        });
+    });
+  });
+
+  it('should be able to update a vacancy created by someone else if signed in with the "admin" role', function (done) {
+    // Set vacancy user
+    vacancy.user = user;
+
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    // Save the vacancy
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(adminCredentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Updating vacancy
+          agent.put('/api/vacancies/' + vacancyObj._id)
+            .send(vacancy)
+            .expect(200)
+            .end(function (vacancySaveErr, vacancySaveRes) {
+              if (vacancySaveErr) {
+                return done(vacancySaveErr);
+              }
+              done();
+            });
+        });
+    });
+  });
+
+  it('should not be able to update a vacancy from someone else if signed in with the "user" role', function (done) {
+    // Set vacancy user
+    vacancy.user = adminUser;
+
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    // Save the vacancy
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Try updating vacancy
+          agent.put('/api/vacancies/' + vacancyObj._id)
+            .send(vacancy)
+            .expect(403)
+            .end(function (vacancySaveErr, vacancySaveRes) {
+              // Set message assertion
+              (vacancySaveRes.body.message).should.match('User is not authorized');
+
+              // Handle vacancy error error
+              done(vacancySaveErr);
+            });
+        });
+    });
   });
 
   it('should be able to get a list of vacancies if not signed in', function (done) {

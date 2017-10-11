@@ -39,7 +39,7 @@
         .catch(errorCallback);
 
       function successCallback(res) {
-        $state.go('admin.vacancies.list'); // should we send the User to the list or the updated Vacancy's view?
+        $state.go('vacancies.list'); // should we send the User to the list or the updated Vacancy's view?
         Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Vacancy saved successfully!' });
       }
 

@@ -1,18 +1,25 @@
 <section>
   <div class="page-header">
-    <h1>Vacancies</h1>
+    <h1>Vagas
+      <a class="btn btn-primary pull-right" data-ui-sref="vacancies.create">
+        <i class="glyphicon glyphicon-plus"></i>
+      </a>
+    </h1>
   </div>
   <div class="list-group">
-    <a ng-repeat="vacancy in vm.vacancies" ui-sref="vacancies.view({ vacancyId: vacancy._id })" class="list-group-item">
+    <a ng-repeat="vacancy in vm.vacancies" ui-sref="vacancies.edit({ vacancyId: vacancy._id })" class="list-group-item">
       <small class="list-group-item-text">
-        Posted on
-        <span ng-bind="vacancy.created | date:'mediumDate'"></span>
-        by
+        Cadastrada
+        <span ng-bind="vacancy.created | date:'dd/MM/yyyy HH:mm'"></span>
+        por
         <span ng-if="vacancy.user" ng-bind="vacancy.user.displayName"></span>
-        <span ng-if="!vacancy.user">Deleted User</span>
+        <span ng-if="!vacancy.user">Usuário excluído</span>
       </small>
       <h4 class="list-group-item-heading" ng-bind="vacancy.title"></h4>
       <p class="list-group-item-text" ng-bind="vacancy.content"></p>
     </a>
+  </div>
+  <div class="alert alert-warning text-center" data-ng-if="vacancies.$resolved && !vacancies.length">
+    Ainda não há vagas cadastradas. Por que não <a data-ui-sref="vacancies.create">cadastrar uma</a>?
   </div>
 </section>

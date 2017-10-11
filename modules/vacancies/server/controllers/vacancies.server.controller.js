@@ -9,7 +9,7 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
- * Create an vacancy
+ * Create a vacancy
  */
 exports.create = function (req, res) {
   var vacancy = new Vacancy(req.body);
@@ -41,10 +41,16 @@ exports.read = function (req, res) {
 };
 
 /**
- * Update an vacancy
+ * Update a vacancy
  */
 exports.update = function (req, res) {
   var vacancy = req.vacancy;
+
+  var isAdmUser = req.user.roles.indexOf('admin') > -1;
+  if ((req.user.id !== req.vacancy.user.id) && !isAdmUser)
+    return res.status(403).send({
+      message: 'User is not authorized'
+    });
 
   vacancy.title = req.body.title;
   vacancy.content = req.body.content;
@@ -61,13 +67,13 @@ exports.update = function (req, res) {
 };
 
 /**
- * Delete an vacancy
+ * Delete a vacancy
  */
 exports.delete = function (req, res) {
   var vacancy = req.vacancy;
+
   var isAdmUser = req.user.roles.indexOf('admin') > -1;
-  console.log('req.user', req.user, 'isAdm', isAdmUser);
-  if ((req.user !== vacancy.user) && !isAdmUser)
+  if ((req.user.id !== req.vacancy.user.id) && !isAdmUser)
     return res.status(403).send({
       message: 'User is not authorized'
     });

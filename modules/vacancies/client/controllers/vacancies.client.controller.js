@@ -18,10 +18,10 @@
 
     // Remove existing Vacancy
     function remove() {
-      if ($window.confirm('Are you sure you want to delete?')) {
+      if ($window.confirm('Deseja realmente excluir esta vaga?')) {
         vm.vacancy.$remove(function () {
-          $state.go('admin.vacancies.list');
-          Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Vacancy deleted successfully!' });
+          $state.go('vacancies.list');
+          Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Vaga excluída com sucesso!' });
         });
       }
     }
@@ -39,7 +39,7 @@
         .catch(errorCallback);
 
       function successCallback(res) {
-        $state.go('admin.vacancies.list'); // should we send the User to the list or the updated Vacancy's view?
+        $state.go('vacancies.list');
         Notification.success({ message: '<i class="glyphicon glyphicon-ok"></i> Vacancy saved successfully!' });
       }
 

@@ -9,7 +9,7 @@
 
   function menuConfig(menuService) {
     menuService.addMenuItem('topbar', {
-      title: 'Vacancies',
+      title: 'Vagas',
       state: 'vacancies',
       type: 'dropdown',
       roles: ['*']
@@ -17,14 +17,14 @@
 
     // Add the dropdown list item
     menuService.addSubMenuItem('topbar', 'vacancies', {
-      title: 'List Vacancies',
+      title: 'Listar Vagas',
       state: 'vacancies.list',
       roles: ['*']
     });
-    
+
     menuService.addSubMenuItem('topbar', 'vacancies', {
-      title: 'Create Vacancy',
-      state: 'admin.vacancies.create',
+      title: 'Cadastrar Vaga',
+      state: 'vacancies.create',
       roles: ['user', 'admin']
     });
   }
