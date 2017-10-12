@@ -19,8 +19,17 @@
         </div>
         <div class="form-group" show-errors>
           <label class="control-label" for="frequency">Frequência de Contratação</label>
-          <input name="frequency" type="text" ng-model="vm.vacancy.frequency" id="frequency" class="form-control" placeholder="Frequência de Contratação"
-            required>
+          <select name="frequency" ng-model="vm.vacancy.frequency" id="frequency" class="form-control" required>
+            <option value="">Por favor, selecione</option>
+            <option value="Segunda à sexta">Segunda à sexta</option>
+            <option value="Segunda à sábado">Segunda à sábado</option>
+            <option value="3x por semana">3x por semana</option>
+            <option value="2x por semana">2x por semana</option>
+            <option value="1x por semana">1x por semana</option>
+            <option value="Quinzenal">Quinzenal</option>
+            <option value="1x por mês">1x por mês</option>
+            <option value="Uma única vez">Uma única vez</option>
+          </select>
           <div ng-messages="vm.form.vacancyForm.frequency.$error" role="alert">
             <p class="help-block error-text" ng-message="required">A Frequência de Contratação é obrigatória.</p>
           </div>
@@ -30,7 +39,8 @@
           <textarea name="content" data-ng-model="vm.vacancy.content" id="content" class="form-control" cols="30" rows="10" placeholder="Descrição"></textarea>
         </div>
         <div class="form-group" ng-if="vm.vacancy._id">
-          <input type="checkbox" ng-model="vm.vacancy.fulfilled" id="fulfilled" name="fulfilled"> <label for="fulfilled">A vaga já foi preenchida</label>
+          <input type="checkbox" ng-model="vm.vacancy.fulfilled" id="fulfilled" name="fulfilled">
+          <label for="fulfilled">A vaga já foi preenchida</label>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-default">{{vm.vacancy._id ? 'Atualizar' : 'Cadastrar'}}</button>
