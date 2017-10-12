@@ -2,6 +2,19 @@
 
 This project lets users create and maintain Vacancies
 
+It allows users to set these properties:
+
+* Title to identify the vacancy.
+* Content to elaborate more on the description if the user feel like it can help on finding the appropriate worker. (optional field)
+* Frequency to hire. It has predefined values that will allow to filter out results in the future. When creating or updating a vacancy, there is a list with most common frequency options to select.
+* Fulfilled to be checked once someone is hired for the vacancy. Vacancies with this option marked doesn't appear to other people. Users can also reactivate a vacancy unchecking this option.
+
+Permissions:
+
+* Guests are allowed to visit, list and view existing vacancies.
+* Users are allowed to create, update and delete their own vacancies, including the fulfilled ones. They can also view not fulfilled vacancies created by other users.
+* Administrators are able to create vacancies and update/delete vacancies from anyone if necessary.
+
 ## Prerequisite Technologies
 
 * [Git](https://git-scm.com/downloads)
