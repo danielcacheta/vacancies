@@ -117,14 +117,7 @@ exports.list = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      vacanciesArray = [];
-      vacancies.reduce((compiledArray, array) => compiledArray.concat(array), [])
-      .forEach((item) => {
-        item.isCurrentUserOwner = !!(req.user && item.user && item.user._id.toString() === req.user._id.toString());
-        vacanciesArray.push(item);
-      });
-      console.log(vacancies);
-      res.json(vacanciesArray);
+      res.json(vacancies);
     }
   });
 };
