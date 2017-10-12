@@ -77,7 +77,8 @@ describe('Vacancy CRUD tests', function () {
       .then(function () {
         vacancy = {
           title: 'Vacancy Title',
-          content: 'Vacancy Content'
+          content: 'Vacancy Content',
+          frequency: 'Segunda à sexta'
         };
         done();
       })
@@ -164,7 +165,37 @@ describe('Vacancy CRUD tests', function () {
           .expect(422)
           .end(function (vacancySaveErr, vacancySaveRes) {
             // Set message assertion
-            (vacancySaveRes.body.message).should.match('Title cannot be blank');
+            vacancySaveRes.body.message.should.match('O título da vaga é obrigatório');
+
+            // Handle vacancy save error
+            done(vacancySaveErr);
+          });
+      });
+  });
+
+  it('should not be able to save a vacancy if no frequency is provided', function (done) {
+    // Invalidate title field
+    vacancy.frequency = '';
+
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new vacancy
+        agent.post('/api/vacancies')
+          .send(vacancy)
+          .expect(422)
+          .end(function (vacancySaveErr, vacancySaveRes) {
+            // Set message assertion
+            vacancySaveRes.body.message.should.match('A frequência de contratação é obrigatória');
 
             // Handle vacancy save error
             done(vacancySaveErr);
@@ -190,6 +221,10 @@ describe('Vacancy CRUD tests', function () {
             return done(signinErr);
           }
           // Updating vacancy
+          vacancy.title = 'A New Title';
+          vacancy.content = 'Updated the content';
+          vacancy.fulfilled = true;
+          vacancy.frequency = 'Segunda à sábado';
           agent.put('/api/vacancies/' + vacancyObj._id)
             .send(vacancy)
             .expect(200)
@@ -197,6 +232,12 @@ describe('Vacancy CRUD tests', function () {
               if (vacancySaveErr) {
                 return done(vacancySaveErr);
               }
+
+              (vacancySaveRes.body.title).should.equal(vacancy.title);
+              (vacancySaveRes.body.content).should.equal(vacancy.content);
+              (vacancySaveRes.body.fulfilled).should.equal(vacancy.fulfilled);
+              (vacancySaveRes.body.frequency).should.equal(vacancy.frequency);
+
               done();
             });
         });
@@ -288,7 +329,7 @@ describe('Vacancy CRUD tests', function () {
             .expect(403)
             .end(function (vacancySaveErr, vacancySaveRes) {
               // Set message assertion
-              (vacancySaveRes.body.message).should.match('User is not authorized');
+              vacancySaveRes.body.message.should.match('User is not authorized');
 
               // Handle vacancy error error
               done(vacancySaveErr);
@@ -313,6 +354,93 @@ describe('Vacancy CRUD tests', function () {
           done();
         });
 
+    });
+  });
+
+  it('should be able to get a vacancy that is already fulfilled with the "admin" user', function (done) {
+    vacancy.fulfilled = true;
+    vacancy.user = user;
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(adminCredentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Request vacancies
+          agent.get('/api/vacancies')
+            .end(function (req, res) {
+              // Set assertion
+              res.body.should.be.instanceof(Array).and.have.lengthOf(1);
+
+              // Call the assertion callback
+              done();
+            });
+        });
+    });
+  });
+
+  it('should be able to get a vacancy that is already fulfilled with the user that created the vacancy', function (done) {
+    vacancy.fulfilled = true;
+    vacancy.user = user;
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    // Save the vacancy
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Request vacancies
+          agent.get('/api/vacancies')
+            .end(function (req, res) {
+              // Set assertion
+              res.body.should.be.instanceof(Array).and.have.lengthOf(1);
+
+              // Call the assertion callback
+              done();
+            });
+        });
+    });
+  });
+
+  it('should be able to get a vacancy that is not open with a user different from the one that created the vacancy', function (done) {
+    vacancy.open = false;
+    vacancy.user = adminUser;
+    // Create new vacancy model instance
+    var vacancyObj = new Vacancy(vacancy);
+
+    // Save the vacancy
+    vacancyObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+          // Request vacancies
+          agent.get('/api/vacancies')
+            .end(function (req, res) {
+              // Set assertion
+              // res.body.should.be.instanceof(Array).and.have.lengthOf(0);
+              res.body.should.match({});
+
+              // Call the assertion callback
+              done();
+            });
+        });
     });
   });
 

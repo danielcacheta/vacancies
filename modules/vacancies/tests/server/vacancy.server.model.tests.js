@@ -35,6 +35,7 @@ describe('Vacancy Model Unit Tests:', function () {
         vacancy = new Vacancy({
           title: 'Vacancy Title',
           content: 'Vacancy Content',
+          frequency: 'Segunda à sexta',
           user: user
         });
 

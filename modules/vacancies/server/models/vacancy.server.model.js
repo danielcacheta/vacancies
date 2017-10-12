@@ -21,12 +21,20 @@ var VacancySchema = new Schema({
     type: String,
     default: '',
     trim: true,
-    required: 'Title cannot be blank'
+    required: 'O título da vaga é obrigatório'
   },
   content: {
     type: String,
     default: '',
     trim: true
+  },
+  fulfilled: {
+    type: Boolean,
+    default: false
+  },
+  frequency: {
+    type: String, enum: ['Segunda à sexta', 'Segunda à sábado', '3x por semana', '2x por semana', '1x por semana', 'Quinzenal', '1x por mês', 'Uma única vez'],
+    required: 'A frequência de contratação é obrigatória'
   },
   user: {
     type: Schema.ObjectId,

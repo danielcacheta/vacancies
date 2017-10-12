@@ -10,16 +10,27 @@
     <form name="vm.form.vacancyForm" class="form-horizontal" ng-submit="vm.save(vm.form.vacancyForm.$valid)" novalidate>
       <fieldset>
         <div class="form-group" show-errors>
-          <label class="control-label" for="title">Title</label>
-          <input name="title" type="text" ng-model="vm.vacancy.title" id="title" class="form-control" placeholder="Title" required
-            autofocus>
+          <label class="control-label" for="title">Título da Vaga</label>
+          <input name="title" type="text" ng-model="vm.vacancy.title" id="title" class="form-control" placeholder="Título da Vaga"
+            required autofocus>
           <div ng-messages="vm.form.vacancyForm.title.$error" role="alert">
-            <p class="help-block error-text" ng-message="required">Vacancy title is required.</p>
+            <p class="help-block error-text" ng-message="required">O Título da Vaga é obrigatório.</p>
+          </div>
+        </div>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="frequency">Frequência de Contratação</label>
+          <input name="frequency" type="text" ng-model="vm.vacancy.frequency" id="frequency" class="form-control" placeholder="Frequência de Contratação"
+            required>
+          <div ng-messages="vm.form.vacancyForm.frequency.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">A Frequência de Contratação é obrigatória.</p>
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label" for="content">Content</label>
-          <textarea name="content" data-ng-model="vm.vacancy.content" id="content" class="form-control" cols="30" rows="10" placeholder="Content"></textarea>
+          <label class="control-label" for="content">Descrição</label>
+          <textarea name="content" data-ng-model="vm.vacancy.content" id="content" class="form-control" cols="30" rows="10" placeholder="Descrição"></textarea>
+        </div>
+        <div class="form-group" ng-if="vm.vacancy._id">
+          <input type="checkbox" ng-model="vm.vacancy.fulfilled" id="fulfilled" name="fulfilled"> <label for="fulfilled">A vaga já foi preenchida</label>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-default">{{vm.vacancy._id ? 'Atualizar' : 'Cadastrar'}}</button>

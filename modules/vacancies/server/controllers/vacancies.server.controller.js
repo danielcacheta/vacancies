@@ -54,6 +54,8 @@ exports.update = function (req, res) {
 
   vacancy.title = req.body.title;
   vacancy.content = req.body.content;
+  vacancy.fulfilled = req.body.fulfilled;
+  vacancy.frequency = req.body.frequency;
 
   vacancy.save(function (err) {
     if (err) {
@@ -93,7 +95,23 @@ exports.delete = function (req, res) {
  * List of Vacancies
  */
 exports.list = function (req, res) {
-  Vacancy.find().sort('-created').populate('user', 'displayName').exec(function (err, vacancies) {
+  let isLogged = req.user;
+  let isAdmin = false;
+  if (isLogged)
+    isAdmin = req.user.roles.indexOf('admin') !== -1;
+
+  let restrictions = {};
+  if (!isAdmin && !isLogged)
+    restrictions = { fulfilled: false };
+  else
+    if (!isAdmin)
+      restrictions = {
+        $or: [
+          { fulfilled: false },
+          { user: req.user }
+        ]
+      };
+  Vacancy.find(restrictions).sort('-created').populate('user', 'displayName').exec(function (err, vacancies) {
     if (err) {
       return res.status(422).send({
         message: errorHandler.getErrorMessage(err)
